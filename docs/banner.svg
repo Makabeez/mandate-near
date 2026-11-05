@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300" role="img" aria-label="Mandate: an AI agent key card gets three strikes punched and is stamped FIRED">
+  <style>
+    .bg{fill:#E6ECE6}.ink{fill:#1F2559}.inkS{stroke:#1F2559}.line{stroke:#C9D3CC}
+    .t1{font:700 60px 'Bricolage Grotesque','Segoe UI',Helvetica,Arial,sans-serif;fill:#1F2559;letter-spacing:-1.5px}
+    .t2{font:500 22px 'Public Sans','Segoe UI',Helvetica,Arial,sans-serif;fill:#4A5080}
+    .t3{font:600 15px 'Public Sans','Segoe UI',Helvetica,Arial,sans-serif;fill:#4A5080}
+    .hole{fill:#E6ECE6;stroke:#4A5080;stroke-width:2;stroke-dasharray:4 4}
+    .p1,.p2,.p3{fill:#1F2559;opacity:0}
+    .p1{animation:punch 9s infinite 1s}.p2{animation:punch 9s infinite 2.2s}.p3{animation:punch3 9s infinite 3.4s}
+    @keyframes punch{0%,2%{opacity:0;transform:scale(1.6)}5%,80%{opacity:.85;transform:scale(1)}90%,100%{opacity:0}}
+    @keyframes punch3{0%,2%{opacity:0;transform:scale(1.6)}5%,67%{opacity:.85;transform:scale(1)}77%,100%{opacity:0}}
+    .stamp{opacity:0;animation:stamp 9s infinite 3.9s;transform-origin:905px 160px}
+    @keyframes stamp{0%{opacity:0;transform:rotate(-9deg) scale(2)}4%,62%{opacity:1;transform:rotate(-9deg) scale(1)}72%,100%{opacity:0;transform:rotate(-9deg) scale(1)}}
+    .void{opacity:0;animation:void 9s infinite 3.9s}
+    @keyframes void{0%{opacity:0}4%,62%{opacity:1}72%,100%{opacity:0}}
+    @media (prefers-reduced-motion:reduce){.p1,.p2,.p3,.stamp,.void{animation:none;opacity:1}}
+  </style>
+  <defs>
+    <pattern id="g" width="46" height="46" patternUnits="userSpaceOnUse">
+      <circle cx="0" cy="0" r="22" fill="none" class="line" stroke-width="1"/>
+      <circle cx="46" cy="46" r="22" fill="none" class="line" stroke-width="1"/>
+    </pattern>
+    <pattern id="v" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)">
+      <rect width="2" height="22" fill="#B0262F" opacity=".22"/>
+    </pattern>
+    <clipPath id="card"><rect x="700" y="50" width="420" height="200" rx="16"/></clipPath>
+  </defs>
+  <rect class="bg" width="1200" height="300"/>
+  <rect width="1200" height="300" fill="url(#g)" opacity=".7"/>
+
+  <text x="70" y="128" class="t1">Mandate</text>
+  <text x="70" y="172" class="t2">An AI agent that can pay invoices.</text>
+  <text x="70" y="204" class="t2">It cannot pay you. Three strikes and NEAR deletes its key.</text>
+  <text x="70" y="252" class="t3">Function-call keys, on-chain policy, NEAR AI TEE signatures checked on-chain</text>
+
+  <!-- agent key card -->
+  <rect x="700" y="50" width="420" height="200" rx="16" fill="#F2F5F1" class="inkS" stroke-width="2.5"/>
+  <circle cx="742" cy="96" r="15" class="hole"/><circle cx="742" cy="96" r="15" class="p1"/>
+  <circle cx="742" cy="150" r="15" class="hole"/><circle cx="742" cy="150" r="15" class="p2"/>
+  <circle cx="742" cy="204" r="15" class="hole"/><circle cx="742" cy="204" r="15" class="p3"/>
+  <text x="784" y="102" style="font:700 26px 'Bricolage Grotesque',Helvetica,Arial,sans-serif" class="ink">ap-agent</text>
+  <text x="784" y="140" class="t3">Key can call: spend on the vault</text>
+  <text x="784" y="166" class="t3">Transfers, other methods: rejected by NEAR</text>
+  <text x="784" y="192" class="t3">Strikes: refused payments, counted on-chain</text>
+  <g class="void" clip-path="url(#card)"><rect x="700" y="50" width="420" height="200" fill="url(#v)"/></g>
+  <g class="stamp">
+    <rect x="820" y="128" width="190" height="64" rx="8" fill="none" stroke="#B0262F" stroke-width="5"/>
+    <text x="915" y="174" text-anchor="middle" style="font:700 40px 'Bricolage Grotesque',Helvetica,Arial,sans-serif;letter-spacing:3px" fill="#B0262F">FIRED</text>
+  </g>
+</svg>

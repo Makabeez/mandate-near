@@ -1,0 +1,10 @@
+# cargo audit configuration for the contract.
+[advisories]
+ignore = [
+  # crypto-bigint timing variability: reached only through dev-dependencies
+  # (k256 test signer, near-sdk unit-testing VM). Not in the deployed wasm:
+  # `cargo tree -i crypto-bigint -e normal --target wasm32-unknown-unknown` prints nothing.
+  "RUSTSEC-2026-0387",
+  # unsafe-libyaml unmaintained: build/test tooling only, not in the wasm.
+  "RUSTSEC-2024-0449",
+]

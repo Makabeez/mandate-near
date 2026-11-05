@@ -1,0 +1,41 @@
+{
+  "name": "mandate-near",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A NEAR vault that lets an AI agent spend inside owner-set rules, verifies the TEE-signed decision on-chain, and deletes the agent's key when it misbehaves.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build:contract": "bash scripts/build-contract.sh",
+    "test:contract": "cd contract && cargo test",
+    "judge": "npm run build:contract && tsx test/judge-demo.ts",
+    "test": "npm run test:contract && npm run judge",
+    "typecheck": "tsc --noEmit",
+    "deploy": "tsx scripts/deploy.ts",
+    "agent:add": "tsx scripts/add-agent.ts",
+    "attestation": "tsx scripts/attestation.ts",
+    "agent": "tsx agent/run.ts",
+    "agent:server": "tsx agent/server.ts",
+    "redteam": "tsx agent/run.ts --scenario redteam",
+    "status": "tsx scripts/status.ts",
+    "owner": "tsx scripts/owner.ts",
+    "readme": "tsx scripts/readme.ts"
+  },
+  "dependencies": {
+    "ethers": "6.17.0",
+    "near-api-js": "7.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "binaryen": "^132.0.0",
+    "near-sandbox": "0.3.5",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3"
+  },
+  "overrides": {
+    "tar": "7.5.22"
+  }
+}

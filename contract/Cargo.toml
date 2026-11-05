@@ -1,0 +1,28 @@
+[package]
+name = "mandate-near"
+version = "0.1.0"
+edition = "2021"
+description = "Mandate: a NEAR vault that lets an AI agent spend, but only inside owner-set rules, and fires the agent's key when it misbehaves."
+license = "MIT"
+repository = "https://github.com/Makabeez/mandate-near"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# default-features = false drops wee_alloc (unmaintained, RUSTSEC-2022-0054); the std allocator is used instead.
+near-sdk = { version = "5.30", default-features = false, features = ["unstable"] }
+hex = "0.4"
+
+[dev-dependencies]
+near-sdk = { version = "5.30", features = ["unit-testing", "unstable"] }
+k256 = { version = "0.13", features = ["ecdsa"] }
+sha3 = "0.10"
+
+[profile.release]
+codegen-units = 1
+opt-level = "z"
+lto = true
+debug = false
+panic = "abort"
+overflow-checks = true

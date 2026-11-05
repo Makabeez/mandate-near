@@ -1,0 +1,19 @@
+# secrets: never commit
+.env
+.env.*
+!.env.example
+.keys/
+*.pem
+submission*.json
+
+# build output
+node_modules/
+contract/target/
+
+# local logs: sandbox runs, and public red-team input from strangers
+evidence/sandbox-run.jsonl
+evidence/redteam.jsonl
+deployments/sandbox.json
+
+# vercel project link
+.vercel/
