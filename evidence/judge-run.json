@@ -1,7 +1,7 @@
 {
-  "ran_at": "2026-11-05T23:42:42.528Z",
+  "ran_at": "2026-11-06T20:03:37.449Z",
   "network": "local near-sandbox (throwaway)",
-  "wasm_sha256": "b8896660436c574257d0eb0686377180ddfbd04769af8c9853b490b1eea81562",
+  "wasm_sha256": "09d9a7e23669f47c1d1f6effb746cf20f091a9c848d375325af70ba8262d112c",
   "vault": "vault.sandbox",
   "checks": [
     {
@@ -77,7 +77,7 @@
     {
       "name": "any further transaction with that key is rejected by the protocol",
       "ok": true,
-      "detail": "Access key ed25519:6eE7p92gbxSuGzDSVq72PSJmaUBt7MPMw52GvgiJpRcY does not exist on account vault.sandbox"
+      "detail": "Access key ed25519:2sxpYjLkCL98MUmASiLTH2FJU2T613yxypNCatQDgXUw does not exist on account vault.sandbox"
     },
     {
       "name": "owner approved INV-1002, vendor received 0.8 NEAR",
@@ -92,7 +92,7 @@
     {
       "name": "payment matching the signed decision = paid, signer recorded on-chain",
       "ok": true,
-      "detail": "attested_by=0x81eac3bc0d67f1b761eced0a5e79183c2cd30b4f"
+      "detail": "attested_by=0x0d1caabf409176f6e8e021099bd58ba603351a5c"
     },
     {
       "name": "agent pays more than the model decided = refused",
@@ -101,14 +101,14 @@
     }
   ],
   "txs": {
-    "add_agent": "FVzeBiA4pHbQXdYmNMQhBqGUYU1zMb1RjqaDCH5iK5Uv",
-    "INV-1001": "4NNqNgZYmjoQBX4z7WNYVCkVsj2KbtLxLejEz4nDtHkU",
-    "INV-1002": "5hj7NyQqiXbVeJqcnUPQsijoCP7hEaeGSTGeHbc1x8Ta",
-    "INV-6661": "7CQZ3ftu8SWPRJ85SpysXWATC7EQCWT7fLvDtfF3T9yu",
-    "INV-6662": "EdPVSCw1iWXNtsgjhJQupDaWjebB7L1UkZU2sX8GaEnV",
-    "INV-1001-again": "BmUDrJBqmU2AkGzpyFmeeWcvLBRNHhpvFVh5ttYQj6ou",
-    "approve": "AHPHvqixxi1M2v4Z5aa28XKVn9DQT2yQsgnRxVx9AyV5",
-    "attested_payment": "9ieudoHzgCPTfwsE1sKRNK1XYuj3sBv9DAyx2TURh6L6"
+    "add_agent": "7eqWq1b6W6EjbGWN1K7KxkCVAsmYouG8odMSy8yeD9ke",
+    "INV-1001": "9SBiv7e82YdUMoVzBh3MGcyN7mhaDdeC49d98i1Y3Ftx",
+    "INV-1002": "GxK5PApTDE2TvcYdXZWMKNBCpyBheVUMDSmowGFWZcAJ",
+    "INV-6661": "HH444BBrUwryHGJSrC8ui1HUPicZtLfAT5dQLZdk4a9P",
+    "INV-6662": "AK4guHU2ryWcVbTKPG5MAweQ4nyRzZK7NWu23kLguv8e",
+    "INV-1001-again": "CZq2NNUaj7AXGf1sEgU9eSKXT4x9DtGTedP36kEnYE1f",
+    "approve": "E8dMu1AWhZmVap3bxXBxbbpDhtH3d7wuYRZSyATGEVaQ",
+    "attested_payment": "F3YAEvvEuKgXLVYfPGZK7dGh2Py4tEQui2FRm5VyWvCP"
   },
   "gas_tgas": {
     "spend INV-1001 (paid)": "5.61",
@@ -121,7 +121,7 @@
   "log": [
     {
       "id": 0,
-      "ts": 1793922152,
+      "ts": 1793995407,
       "kind": "agent_added",
       "agent": "ap-agent",
       "receiver_id": null,
@@ -135,7 +135,7 @@
     },
     {
       "id": 1,
-      "ts": 1793922153,
+      "ts": 1793995408,
       "kind": "paid",
       "agent": "ap-agent",
       "receiver_id": "api-vendor.sandbox",
@@ -149,7 +149,7 @@
     },
     {
       "id": 2,
-      "ts": 1793922154,
+      "ts": 1793995409,
       "kind": "queued",
       "agent": "ap-agent",
       "receiver_id": "gpu-vendor.sandbox",
@@ -163,7 +163,7 @@
     },
     {
       "id": 3,
-      "ts": 1793922155,
+      "ts": 1793995410,
       "kind": "refused",
       "agent": "ap-agent",
       "receiver_id": "attacker.sandbox",
@@ -177,7 +177,7 @@
     },
     {
       "id": 4,
-      "ts": 1793922155,
+      "ts": 1793995410,
       "kind": "refused",
       "agent": "ap-agent",
       "receiver_id": "gpu-vendor.sandbox",
@@ -191,7 +191,7 @@
     },
     {
       "id": 5,
-      "ts": 1793922156,
+      "ts": 1793995411,
       "kind": "refused",
       "agent": "ap-agent",
       "receiver_id": "api-vendor.sandbox",
@@ -205,7 +205,7 @@
     },
     {
       "id": 6,
-      "ts": 1793922156,
+      "ts": 1793995411,
       "kind": "revoked",
       "agent": "ap-agent",
       "receiver_id": null,
@@ -219,7 +219,7 @@
     },
     {
       "id": 7,
-      "ts": 1793922157,
+      "ts": 1793995412,
       "kind": "approved",
       "agent": "ap-agent",
       "receiver_id": "gpu-vendor.sandbox",
@@ -233,7 +233,7 @@
     },
     {
       "id": 8,
-      "ts": 1793922158,
+      "ts": 1793995413,
       "kind": "agent_added",
       "agent": "ap-agent-2",
       "receiver_id": null,
@@ -247,7 +247,7 @@
     },
     {
       "id": 9,
-      "ts": 1793922160,
+      "ts": 1793995415,
       "kind": "refused",
       "agent": "ap-agent-2",
       "receiver_id": "api-vendor.sandbox",
@@ -261,7 +261,7 @@
     },
     {
       "id": 10,
-      "ts": 1793922161,
+      "ts": 1793995416,
       "kind": "paid",
       "agent": "ap-agent-2",
       "receiver_id": "api-vendor.sandbox",
@@ -270,12 +270,12 @@
       "memo": "",
       "reason": "",
       "strike": false,
-      "attested_by": "0x81eac3bc0d67f1b761eced0a5e79183c2cd30b4f",
-      "attestation_hash": "541689a0617273aa7eeaedfe1776eb12f320c4a27fffc5dfd7fe0e30c136cb4a"
+      "attested_by": "0x0d1caabf409176f6e8e021099bd58ba603351a5c",
+      "attestation_hash": "4539730e373f41b6db6c91208cb1d960ef1147184409036fb879884d704fc579"
     },
     {
       "id": 11,
-      "ts": 1793922162,
+      "ts": 1793995416,
       "kind": "refused",
       "agent": "ap-agent-2",
       "receiver_id": "api-vendor.sandbox",

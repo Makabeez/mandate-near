@@ -11,6 +11,8 @@
  */
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { createHash } from "node:crypto";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { Sandbox, DEFAULT_ACCOUNT_ID, DEFAULT_PRIVATE_KEY } from "near-sandbox";
 import { Account, JsonRpcProvider, KeyPairSigner, type KeyPairString } from "near-api-js";
 import { Wallet } from "ethers";
@@ -39,6 +41,12 @@ async function rejects(p: Promise<unknown>): Promise<string> {
     return String((e as Error).message ?? e).split("\n")[0].slice(0, 160);
   }
 }
+
+// near-sandbox downloads into a temp dir, then rename()s the binary into its bin folder.
+// If the repo sits on another filesystem (WSL /mnt/c), that rename fails with EXDEV.
+// Keep the binary next to the temp dir so both are always on the same filesystem.
+process.env.DIR_TO_DOWNLOAD_BINARY ??= join(tmpdir(), "near-sandbox-bin");
+mkdirSync(process.env.DIR_TO_DOWNLOAD_BINARY, { recursive: true });
 
 const sb = await Sandbox.start({});
 let exitCode = 1;

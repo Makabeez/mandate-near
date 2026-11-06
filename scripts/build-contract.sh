@@ -6,7 +6,11 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT/contract"
 mkdir -p "$ROOT/res"
 rustup target add wasm32-unknown-unknown >/dev/null 2>&1 || true
-RUSTFLAGS="${RUSTFLAGS:-} -C link-arg=-s" cargo build --target wasm32-unknown-unknown --release --quiet
+# Remap machine-specific paths (cargo registry, repo location) that end up in panic
+# location strings, so the same commit builds the same wasm on any machine.
+CARGO_HOME_DIR="${CARGO_HOME:-$HOME/.cargo}"
+RUSTFLAGS="${RUSTFLAGS:-} -C link-arg=-s --remap-path-prefix=$CARGO_HOME_DIR=/cargo --remap-path-prefix=$ROOT=/mandate-near" \
+  cargo build --target wasm32-unknown-unknown --release --quiet
 RAW=target/wasm32-unknown-unknown/release/mandate_near.wasm
 OUT="$ROOT/res/mandate_near.wasm"
 if [ -x "$ROOT/node_modules/.bin/wasm-opt" ]; then
