@@ -11,7 +11,7 @@
 [![Built for NEAR HACKATHON](https://img.shields.io/badge/built_for-NEAR_HACKATHON-1F2559?style=for-the-badge)](https://nearhackathon.com)
 <!-- live:end -->
 
-![Rust](https://img.shields.io/badge/near--sdk-5.30-4A5080) ![Tests](https://img.shields.io/badge/contract_tests-23_passing-2D6A4F) ![Judge](https://img.shields.io/badge/judge_checks-19_passing-2D6A4F) ![NEAR AI](https://img.shields.io/badge/NEAR_AI_Cloud-TEE_signatures-4A5080)
+![Rust](https://img.shields.io/badge/near--sdk-5.30-4A5080) ![Tests](https://img.shields.io/badge/contract_tests-24_passing-2D6A4F) ![Judge](https://img.shields.io/badge/judge_checks-19_passing-2D6A4F) ![NEAR AI](https://img.shields.io/badge/NEAR_AI_Cloud-TEE_signatures-4A5080)
 
 </div>
 
@@ -57,7 +57,7 @@ npm run judge
 | 10 | Owner approves INV-1002, hires a new agent | vendor +0.8; new key added |
 | 11 | Turn on attestation; pay without it, with it, and with a tampered amount | `attestation_required` / `paid` with `attested_by` recorded / `decision_amount_mismatch` |
 
-Contract unit tests (23): `npm run test:contract`.
+Contract unit tests (24): `npm run test:contract`.
 
 ## Live on testnet
 
@@ -106,7 +106,7 @@ if d.invoice_id != invoice_id        { return Err("decision_invoice_mismatch"); 
 
 The contract also rejects a reused signature (`attestation_replayed`) and a response older than `max_attestation_age_secs` (`attestation_stale`). The owner registers the TEE signing address once, after checking it against the model's attestation report: `npm run attestation` fetches the report with a fresh nonce, runs a real completion, verifies the signature locally, confirms the signer appears in the report, and saves it all to `evidence/nearai-attestation.json`.
 
-Cost: the whole attested `spend`, including `ecrecover`, sha256 of a ~6 KB response, and JSON parsing, burns **7.3 Tgas** (about 0.0007 NEAR). A plain payment is 5.6 Tgas, a refusal 2.8. Numbers are from `evidence/judge-run.json`.
+Cost: the whole attested `spend`, including `ecrecover`, sha256 of a ~6 KB response, and JSON parsing, burns **6.7 Tgas** (about 0.0007 NEAR). A plain payment is 5.6 Tgas, a refusal 2.8. Numbers are from `evidence/judge-run.json`.
 
 ## Real vs simulated
 
@@ -144,6 +144,7 @@ npm run agent:add -- --rotate      # hire a new agent
 npm run attestation                # find + check the NEAR AI TEE signer
 npm run owner -- set-attesters 0x… && npm run owner -- attestation on
 npm run agent:server               # red-team API for the dashboard (port 8097)
+npm run upgrade                    # replace the contract code on the vault, state kept (only before lock)
 npm run owner -- lock --yes        # delete the vault's own full-access key (optional, irreversible)
 ```
 
@@ -153,7 +154,7 @@ After `lock`, the only key left on the vault account is the agent's function-cal
 
 | Layer | What |
 |---|---|
-| Contract | Rust, `near-sdk` 5.30 (`unstable` feature for `ecrecover`), `hex`; wasm-opt `-Oz` → 302 KB, no wee_alloc |
+| Contract | Rust, `near-sdk` 5.30 (`unstable` feature for `ecrecover`), `hex`; built with `--cfg near` (host sha256/keccak), wasm-opt `-Oz` → 287 KB, no wee_alloc |
 | Client kit | `sdk/mandate.ts` on `near-api-js` 7.4: one code path for the judge demo, scripts and agent |
 | Agent | Node 22 + TypeScript (`tsx`), NEAR AI Cloud OpenAI-compatible API, `ethers` 6 for local EIP-191 checks |
 | Local chain | `near-sandbox` 0.3.5 (official nearcore 2.14 sandbox binary) |
@@ -165,7 +166,7 @@ After `lock`, the only key left on the vault account is the agent's function-cal
 ```
 contract/src/lib.rs      vault: policy, spend, strikes, key add/delete, owner methods, views
 contract/src/attest.rs   NEAR AI signature verification + decision matching, exact NEAR decimal parser
-contract/src/tests.rs    23 unit tests (incl. real secp256k1 signing)
+contract/src/tests.rs    24 unit tests (incl. real secp256k1 signing)
 sdk/mandate.ts           typed client: deploy, owner, agent, views
 agent/                   decision prompt, NEAR AI client, agent core, CLI, red-team server
 scripts/                 build, deploy, add-agent, owner, status, attestation, readme
@@ -178,7 +179,7 @@ evidence/                judge-run.json (and testnet runs once you make them)
 
 - **Baseline (rules Q-002, Q-003, Q-005).** Mandate started as an EVM contract on Arc ([Makabeez/mandate](https://github.com/Makabeez/mandate), Sept 2026). This repository shares the idea and the name, and none of the code. The NEAR contract, the function-call-key design, the on-chain strike and key deletion, the TEE decision verification, the client kit, the agent, the dashboard and the tests were all written for NEAR HACKATHON, inside the window. There is no pre-hackathon code in this repository: every commit is inside the window.
 - **Libraries.** near-sdk, hex, k256 and sha3 (tests only), near-api-js, near-sandbox, ethers, binaryen (wasm-opt), tsx, TypeScript. Fonts from Google Fonts.
-- **AI assistance.** Built with Claude as a coding assistant. Every line was run: 23 unit tests and 19 end-to-end checks on a real NEAR runtime.
+- **AI assistance.** Built with Claude as a coding assistant. Every line was run: 24 unit tests and 19 end-to-end checks on a real NEAR runtime.
 - **One project.** This is my only NEAR HACKATHON submission.
 
 ## License

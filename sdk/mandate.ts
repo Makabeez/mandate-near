@@ -19,7 +19,7 @@ import {
 export const YOCTO = 10n ** 24n;
 export const ONE_YOCTO = 1n;
 const OWNER_GAS = teraToGas("50");
-const SPEND_GAS = teraToGas("30"); // measured: 2.8–7.3 Tgas incl. on-chain TEE signature check (evidence/judge-run.json)
+const SPEND_GAS = teraToGas("30"); // measured: 2.8–6.7 Tgas incl. on-chain TEE signature check (evidence/judge-run.json)
 
 export interface Policy {
   max_per_tx: string;

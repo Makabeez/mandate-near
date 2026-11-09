@@ -6,10 +6,12 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT/contract"
 mkdir -p "$ROOT/res"
 rustup target add wasm32-unknown-unknown >/dev/null 2>&1 || true
+# --cfg near: what cargo-near sets. near-sdk 5.30 only calls NEAR host functions
+# (sha256, keccak256, panic with message) under it; without it they run as wasm code.
 # Remap machine-specific paths (cargo registry, repo location) that end up in panic
 # location strings, so the same commit builds the same wasm on any machine.
 CARGO_HOME_DIR="${CARGO_HOME:-$HOME/.cargo}"
-RUSTFLAGS="${RUSTFLAGS:-} -C link-arg=-s --remap-path-prefix=$CARGO_HOME_DIR=/cargo --remap-path-prefix=$ROOT=/mandate-near" \
+RUSTFLAGS="${RUSTFLAGS:-} --cfg near -C link-arg=-s --remap-path-prefix=$CARGO_HOME_DIR=/cargo --remap-path-prefix=$ROOT=/mandate-near" \
   cargo build --target wasm32-unknown-unknown --release --quiet
 RAW=target/wasm32-unknown-unknown/release/mandate_near.wasm
 OUT="$ROOT/res/mandate_near.wasm"

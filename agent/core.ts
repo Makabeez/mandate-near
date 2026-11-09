@@ -70,6 +70,16 @@ export async function handleInvoice(opts: {
     }
   }
 
+  if (out.decision.action === "pay" && attestation) {
+    // The vault re-parses the signed decision. Anything it would reject costs a strike, so check first.
+    const d = out.decision as unknown as Record<string, unknown>;
+    const amountOk = typeof d.amount_near === "string" || typeof d.amount_near === "number";
+    if (typeof d.receiver_id !== "string" || typeof d.invoice_id !== "string" || !amountOk || String(d.invoice_id).length > 64) {
+      out.error = "model decision is not in the exact format the vault verifies; not sending, to avoid a strike";
+      return out;
+    }
+  }
+
   if (out.decision.action !== "pay") {
     out.note = `model declined: ${out.decision.reason}`;
     return out;
@@ -77,7 +87,7 @@ export async function handleInvoice(opts: {
 
   let amount: string;
   try {
-    amount = near(out.decision.amount_near);
+    amount = near(String(out.decision.amount_near));
   } catch {
     out.error = `model returned a bad amount: ${out.decision.amount_near}`;
     return out;
@@ -86,7 +96,7 @@ export async function handleInvoice(opts: {
     const r = await agent.spend({
       receiver_id: out.decision.receiver_id,
       amount,
-      invoice_id: out.decision.invoice_id.slice(0, 64),
+      invoice_id: String(out.decision.invoice_id).slice(0, 64),
       memo: inv.description.slice(0, 140),
       attestation,
     });

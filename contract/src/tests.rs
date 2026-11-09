@@ -393,3 +393,18 @@ fn soft_refusal_does_not_burn_the_attested_decision() {
     as_agent(T0 + 12);
     assert_eq!(c.spend(merchant(), U128(NEAR / 5), "inv-s".into(), None, Some(again)).status, "paid");
 }
+
+#[test]
+fn numeric_amount_in_model_decision_is_accepted() {
+    let mut c = setup_attested();
+    as_agent(T0 + 10);
+    let mut a = attestation(&tee_key(), merchant().as_str(), "0.2", "inv-n", T0 + 5);
+    // Re-sign a body where the model wrote the amount as a JSON number.
+    a.response_body = a.response_body.replace("\\\"amount_near\\\":\\\"0.2\\\"", "\\\"amount_near\\\":0.2");
+    assert!(a.response_body.contains("amount_near\\\":0.2"), "{}", a.response_body);
+    let text = format!("zai-org/GLM-5.1-FP8:{}:{}", sha256_hex("{\"request\":true}"), sha256_hex(&a.response_body));
+    a.signature = eip191_sign(&tee_key(), &text);
+    a.text = text;
+    let r = c.spend(merchant(), U128(NEAR / 5), "inv-n".into(), None, Some(a));
+    assert_eq!(r.status, "paid", "{r:?}");
+}

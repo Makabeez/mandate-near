@@ -24,8 +24,17 @@ use near_sdk::serde_json::{self, Value};
 struct Decision {
     action: String,
     receiver_id: String,
-    amount_near: String,
+    /// Models write this as "0.05" or 0.05; both are accepted.
+    amount_near: Value,
     invoice_id: String,
+}
+
+fn amount_text(v: &Value) -> Option<String> {
+    match v {
+        Value::String(s) => Some(s.clone()),
+        Value::Number(n) => Some(n.to_string()),
+        _ => None,
+    }
 }
 
 /// What a verified attestation proves.
@@ -135,7 +144,7 @@ pub fn verify(
     if d.receiver_id != receiver_id {
         return Err("decision_receiver_mismatch");
     }
-    if parse_near(&d.amount_near) != Some(amount_yocto) {
+    if amount_text(&d.amount_near).and_then(|a| parse_near(&a)) != Some(amount_yocto) {
         return Err("decision_amount_mismatch");
     }
     if d.invoice_id != invoice_id {

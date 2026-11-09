@@ -22,7 +22,8 @@
     "redteam": "tsx agent/run.ts --scenario redteam",
     "status": "tsx scripts/status.ts",
     "owner": "tsx scripts/owner.ts",
-    "readme": "tsx scripts/readme.ts"
+    "readme": "tsx scripts/readme.ts",
+    "upgrade": "tsx scripts/upgrade.ts"
   },
   "dependencies": {
     "ethers": "6.17.0",
