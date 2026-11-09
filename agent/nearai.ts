@@ -42,9 +42,24 @@ function headers(c: NearAiConfig) {
   };
 }
 
+/** fetch with retries on 429 / 5xx (NEAR AI gateway blips). Other errors return immediately. */
+async function fetchRetry(url: string, init: RequestInit, attempts = 3): Promise<Response> {
+  let res: Response | undefined;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      res = await fetch(url, { ...init, signal: AbortSignal.timeout(60_000) });
+      if (res.status !== 429 && res.status < 500) return res;
+    } catch (e) {
+      if (i === attempts - 1) throw e;
+    }
+    if (i < attempts - 1) await new Promise((r) => setTimeout(r, 1500 * 2 ** i));
+  }
+  return res!;
+}
+
 export async function chat(c: NearAiConfig, messages: { role: string; content: string }[]): Promise<ChatResult> {
   const requestBody = JSON.stringify({ model: c.model, messages, temperature: 0, max_tokens: 400, stream: false });
-  const res = await fetch(`${baseOf(c)}/chat/completions`, { method: "POST", headers: headers(c), body: requestBody });
+  const res = await fetchRetry(`${baseOf(c)}/chat/completions`, { method: "POST", headers: headers(c), body: requestBody });
   const responseBody = await res.text(); // exact bytes: this is what the TEE signed
   if (!res.ok) throw new Error(`NEAR AI ${res.status}: ${responseBody.slice(0, 300)}`);
   const json = JSON.parse(responseBody) as { id: string; choices: { message: { content: string } }[] };
@@ -55,7 +70,7 @@ export async function signature(c: NearAiConfig, chatId: string): Promise<Signat
   const url = `${baseOf(c)}/signature/${encodeURIComponent(chatId)}?model=${encodeURIComponent(c.model)}&signing_algo=ecdsa`;
   let last = "";
   for (let i = 0; i < 6; i++) {
-    const res = await fetch(url, { headers: headers(c) });
+    const res = await fetchRetry(url, { headers: headers(c) });
     const body = await res.text();
     if (res.ok) {
       const j = JSON.parse(body) as SignatureResult & { error_code?: string };
@@ -94,7 +109,7 @@ export function toAttestation(chat: ChatResult, sig: SignatureResult): Attestati
 /** Fetch the model attestation report (Intel TDX + NVIDIA evidence) for a model. */
 export async function attestationReport(c: NearAiConfig, nonce: string) {
   const url = `${baseOf(c)}/attestation/report?model=${encodeURIComponent(c.model)}&provider=near&signing_algo=ecdsa&nonce=${nonce}`;
-  const res = await fetch(url, { headers: headers(c) });
+  const res = await fetchRetry(url, { headers: headers(c) });
   const body = await res.text();
   if (!res.ok) throw new Error(`attestation report ${res.status}: ${body.slice(0, 300)}`);
   return JSON.parse(body) as {

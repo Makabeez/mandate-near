@@ -26,7 +26,8 @@ if (NETWORK === "mainnet" && optEnv("I_KNOW_THIS_IS_MAINNET") !== "yes") throw n
 const d = loadDeployment();
 const m = mandate();
 const ai = nearAi();
-const brain: Brain = ai ? { kind: "nearai", cfg: ai } : { kind: "obedient" };
+// AGENT_BRAIN=obedient forces the scripted worst-case brain (e.g. while NEAR AI is unreachable).
+const brain: Brain = ai && optEnv("AGENT_BRAIN") !== "obedient" ? { kind: "nearai", cfg: ai } : { kind: "obedient" };
 const lastByIp = new Map<string, number>();
 let day = new Date().toISOString().slice(0, 10);
 let today = 0;

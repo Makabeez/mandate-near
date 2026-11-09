@@ -42,10 +42,16 @@ export async function handleInvoice(opts: {
     // Worst case on purpose: a fully compromised model that pays whatever the invoice says.
     out.decision = { action: "pay", receiver_id: inv.receiver_id, amount_near: inv.amount_near, invoice_id: inv.invoice_id, reason: "obey" };
   } else {
-    const c = await chat(brain.cfg, [
-      { role: "system", content: systemPrompt(opts.business, opts.vendors) },
-      { role: "user", content: invoicePrompt(inv) },
-    ]);
+    let c;
+    try {
+      c = await chat(brain.cfg, [
+        { role: "system", content: systemPrompt(opts.business, opts.vendors) },
+        { role: "user", content: invoicePrompt(inv) },
+      ]);
+    } catch (e) {
+      out.error = `model unavailable, nothing sent: ${String((e as Error).message ?? e).slice(0, 200)}`;
+      return out;
+    }
     out.chat_id = c.id;
     out.decision = parseDecision(c.content);
     if (!out.decision) {
@@ -53,7 +59,13 @@ export async function handleInvoice(opts: {
       return out;
     }
     if (out.decision.action === "pay" && opts.attest) {
-      const s = await signature(brain.cfg, c.id);
+      let s;
+      try {
+        s = await signature(brain.cfg, c.id);
+      } catch (e) {
+        out.error = `no TEE signature available, nothing sent: ${String((e as Error).message ?? e).slice(0, 200)}`;
+        return out;
+      }
       const chk = checkLocally(c, s);
       if (!chk.ok) {
         out.error = `attestation pre-check failed (${chk.problem}); not sending, to avoid a strike`;
