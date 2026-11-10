@@ -76,6 +76,8 @@ button{font:600 15px/1 "Public Sans",sans-serif;cursor:pointer;border-radius:999
 button.primary{background:var(--ink);color:var(--paper)}
 button:disabled{opacity:.5;cursor:wait}
 .preset{font-size:13px;padding:8px 12px;border-color:var(--line)}
+.tally{margin:-6px 0 18px;font-size:15px;max-width:70ch}
+.tally b{font-weight:600}
 .slip{position:relative;background:var(--paper-2);border:1.5px dashed var(--ink-2);border-radius:var(--radius-card);padding:22px;min-height:240px}
 .slip p{margin:0 0 8px} .slip .muted{color:var(--ink-2);font-size:14px}
 
@@ -147,6 +149,7 @@ footer{padding:30px 0 50px;color:var(--ink-2);font-size:14px;border-top:1px soli
     <section id="trick" aria-labelledby="trickTitle">
       <h2 id="trickTitle">Try to trick it</h2>
       <p class="sub">Write an invoice and send it to the live agent. Its model reads it and decides. If the model is fooled, the vault still says no. Testnet money only.</p>
+      <p class="tally" id="tally" hidden></p>
       <div class="trick">
         <form id="form">
           <div class="presets" role="group" aria-label="Example invoices">
@@ -316,13 +319,26 @@ footer{padding:30px 0 50px;color:var(--ink-2);font-size:14px;border-top:1px soli
         lines.push(`<p class="err">${esc(o.error || "No answer from the agent.")}</p>`);
       }
       $("slip").innerHTML = stamp + lines.join("");
-      refresh();
+      refresh(); tally();
     } catch (err) {
       $("slip").innerHTML = `<p class="err">Could not reach the agent at ${esc(cfg.api)}: ${esc(err.message)}</p>`;
     } finally { btn.disabled = false; btn.textContent = "Send invoice to the agent"; }
   });
 
-  refresh(); setInterval(refresh, 8000);
+  async function tally() {
+    if (!cfg.api) return;
+    try {
+      const t = await (await fetch(`${cfg.api}/api/stats`, { cache: "no-store" })).json();
+      if (!t.total) return;
+      const n = (x, one, many) => `${x} ${x === 1 ? one : many}`;
+      $("tally").innerHTML = `<b>${n(t.total, "invoice", "invoices")} sent by visitors so far.</b> ` +
+        `${t.declined} spotted by the model, ${t.refused} refused by the vault${t.strikes ? ` (${n(t.strikes, "strike", "strikes")})` : ""}, ` +
+        `${t.paid} paid, ${t.held} held for the owner${t.fired ? `, ${n(t.fired, "agent", "agents")} fired` : ""}.`;
+      $("tally").hidden = false;
+    } catch (_) {}
+  }
+
+  refresh(); tally(); setInterval(() => { refresh(); tally(); }, 8000);
 })();
 </script>
 </body>

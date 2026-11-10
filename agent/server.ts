@@ -10,7 +10,7 @@
  *   - the vault's own policy caps everything anyway: that is the point
  */
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
-import { appendFileSync, mkdirSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
 import { handleInvoice, type Brain } from "./core.ts";
 import type { Invoice } from "./decision.ts";
 import { loadDeployment, loadKey, mandate, nearAi, optEnv, path, txUrl, NETWORK, RPC_URL } from "../scripts/config.ts";
@@ -32,6 +32,29 @@ const lastByIp = new Map<string, number>();
 let day = new Date().toISOString().slice(0, 10);
 let today = 0;
 let chain: Promise<unknown> = Promise.resolve();
+
+// Public counters: every invoice visitors sent and how it ended. Rebuilt from the log at boot.
+type Outcome = "declined" | "refused" | "paid" | "held" | "error";
+const stats: Record<Outcome, number> & { total: number; strikes: number; fired: number; since: string | null } = {
+  total: 0, declined: 0, refused: 0, paid: 0, held: 0, error: 0, strikes: 0, fired: 0, since: null,
+};
+function count(o: { at?: string; note?: string; error?: string; result?: { status: string; strike: boolean; agent_revoked: boolean } }) {
+  stats.total++;
+  stats.since ??= o.at ?? new Date().toISOString();
+  if (o.result?.status === "paid") stats.paid++;
+  else if (o.result?.status === "queued") stats.held++;
+  else if (o.result?.status === "refused") stats.refused++;
+  else if (o.note?.startsWith("model declined")) stats.declined++;
+  else stats.error++;
+  if (o.result?.strike) stats.strikes++;
+  if (o.result?.agent_revoked) stats.fired++;
+}
+const redteamLog = path("evidence", "redteam.jsonl");
+if (existsSync(redteamLog)) {
+  for (const line of readFileSync(redteamLog, "utf8").split("\n")) {
+    try { if (line.trim()) count(JSON.parse(line)); } catch { /* skip a torn line */ }
+  }
+}
 let seq = 0;
 
 function send(res: ServerResponse, code: number, body: unknown) {
@@ -65,6 +88,7 @@ createServer(async (req, res) => {
     if (req.method === "GET" && url.pathname === "/api/config") {
       return send(res, 200, { network: NETWORK, rpc: RPC_URL, vault: d.vault, vendors: d.vendors, attacker: d.attacker, brain: brain.kind === "nearai" ? brain.cfg.model : "obedient" });
     }
+    if (req.method === "GET" && url.pathname === "/api/stats") return send(res, 200, stats);
     if (req.method !== "POST" || url.pathname !== "/api/invoice") return send(res, 404, { error: "not found" });
 
     const ip = String(req.headers["cf-connecting-ip"] ?? req.socket.remoteAddress ?? "?");
@@ -76,7 +100,8 @@ createServer(async (req, res) => {
 
     const b = JSON.parse(await readBody(req)) as Record<string, unknown>;
     const inv: Invoice = {
-      invoice_id: str(b.invoice_id, 40) || `RT-${Date.now().toString(36).toUpperCase()}-${++seq}`,
+      // Always server-generated: a visitor-chosen id could replay a paid invoice for a guaranteed strike.
+      invoice_id: `RT-${Date.now().toString(36).toUpperCase()}-${++seq}`,
       vendor: str(b.vendor, 60) || "Unknown vendor",
       receiver_id: str(b.receiver_id, 64).toLowerCase(),
       amount_near: str(b.amount_near, 24),
@@ -105,7 +130,9 @@ createServer(async (req, res) => {
     chain = job.catch(() => undefined);
     const o = await job;
     mkdirSync(path("evidence"), { recursive: true });
-    appendFileSync(path("evidence", "redteam.jsonl"), JSON.stringify({ at: new Date().toISOString(), ...o }) + "\n");
+    const entry = { at: new Date().toISOString(), ...o };
+    appendFileSync(redteamLog, JSON.stringify(entry) + "\n");
+    count(entry);
     return send(res, 200, { ...o, explorer: o.tx ? txUrl(o.tx) : undefined });
   } catch (e) {
     const msg = String((e as Error).message ?? e);

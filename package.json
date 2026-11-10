@@ -23,7 +23,8 @@
     "status": "tsx scripts/status.ts",
     "owner": "tsx scripts/owner.ts",
     "readme": "tsx scripts/readme.ts",
-    "upgrade": "tsx scripts/upgrade.ts"
+    "upgrade": "tsx scripts/upgrade.ts",
+    "watchdog": "tsx scripts/watchdog.ts"
   },
   "dependencies": {
     "ethers": "6.17.0",

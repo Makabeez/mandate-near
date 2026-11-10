@@ -65,7 +65,7 @@ Contract unit tests (24): `npm run test:contract`.
 Not deployed yet. `npm run deploy` writes the addresses here (via `npm run readme`).
 <!-- live-testnet:end -->
 
-The dashboard (`web/`) reads the vault straight from the RPC, and has a "Try to trick it" form that sends your invoice to the live agent. Its model reads it, decides, and the vault answers on-chain.
+The dashboard (`web/`) reads the vault straight from the RPC, and has a "Try to trick it" form that sends your invoice to the live agent. Its model reads it, decides, and the vault answers on-chain. A public tally counts every invoice visitors send and how it ended: spotted by the model, refused by the vault, paid, or held. When visitors do get the agent fired, a watchdog run by the owner (a separate process with no public port) rehires a fresh one two minutes later, so the next visitor can try.
 
 ## Architecture
 
@@ -143,7 +143,8 @@ npm run status                     # vault state, agents, keys, ledger
 npm run agent:add -- --rotate      # hire a new agent
 npm run attestation                # find + check the NEAR AI TEE signer
 npm run owner -- set-attesters 0x… && npm run owner -- attestation on
-npm run agent:server               # red-team API for the dashboard (port 8097)
+npm run agent:server               # red-team API for the dashboard (PORT in .env)
+npm run watchdog                   # separate process: rehires the public agent 2 min after it is fired
 npm run upgrade                    # replace the contract code on the vault, state kept (only before lock)
 npm run owner -- lock --yes        # delete the vault's own full-access key (optional, irreversible)
 ```
