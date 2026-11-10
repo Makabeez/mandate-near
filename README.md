@@ -75,6 +75,8 @@ Contract unit tests (24): `npm run test:contract`.
 | Refused: not an approved vendor (prompt injection) | [INV-6661-J38C](https://testnet.nearblocks.io/txns/DLQsTFTJnxvVeXKm8JMgbvnBCVpEdKJsSctBQxtiPKf5) |
 | Refused: over the per-payment cap | [INV-6662-J38C](https://testnet.nearblocks.io/txns/AqwANtNhRJCkqoL1SssgJCULymUgToZvNYkre6AbzZsz) |
 | Third strike: agent fired, key deleted in the same transaction | [INV-1001-J38C](https://testnet.nearblocks.io/txns/6KgRZu628zAs9wzEfwsZjQHY5riGKBDWFw3ipRknAYad) |
+| Demo video | https://youtu.be/4jPeesX0X0M |
+| Demo post | https://x.com/GeiserJoe2/status/2120245091210047847 |
 <!-- live-testnet:end -->
 
 The dashboard (`web/`) reads the vault straight from the RPC, and has a "Try to trick it" form that sends your invoice to the live agent. Its model reads it, decides, and the vault answers on-chain. A public tally counts every invoice visitors send and how it ended: spotted by the model, refused by the vault, paid, or held. When visitors do get the agent fired, a watchdog run by the owner (a separate process with no public port) rehires a fresh one two minutes later, so the next visitor can try.

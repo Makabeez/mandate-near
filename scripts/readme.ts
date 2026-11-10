@@ -46,7 +46,7 @@ const lines = [
 
 let readme = readFileSync(path("README.md"), "utf8");
 readme = readme.replace(/<!-- live-testnet:start -->[\s\S]*?<!-- live-testnet:end -->/, `<!-- live-testnet:start -->\n${lines.join("\n")}\n<!-- live-testnet:end -->`);
-if (dashboard) {
+if (dashboard && !readme.includes("live_demo-try_to_trick_it")) {
   readme = readme.replace(
     /\[!\[Judge demo\]\(https:\/\/img\.shields\.io\/badge\/judge_demo-npm_run_judge-1F2559\?style=for-the-badge\)\]\(#try-it-in-one-command\)/,
     `[![Live demo](https://img.shields.io/badge/live_demo-try_to_trick_it-B0262F?style=for-the-badge)](${dashboard}) [![Judge demo](https://img.shields.io/badge/judge_demo-npm_run_judge-1F2559?style=for-the-badge)](#try-it-in-one-command)`,
