@@ -1,6 +1,6 @@
 {
   "network": "testnet",
   "rpc": "https://test.rpc.fastnear.com",
-  "vault": "",
-  "api": ""
+  "vault": "mandate.makabeez-mandate.testnet",
+  "api": "https://mandate-near.baserep.xyz"
 }

@@ -5,8 +5,8 @@
 **An AI agent that can pay your invoices, and cannot pay anyone else.<br>Three bad payments and the vault deletes the agent's key, on-chain.**
 
 <!-- live:start -->
-[![Judge demo](https://img.shields.io/badge/judge_demo-npm_run_judge-1F2559?style=for-the-badge)](#try-it-in-one-command)
-[![Contract](https://img.shields.io/badge/contract-testnet-2D6A4F?style=for-the-badge)](#live-on-testnet)
+[![Live demo](https://img.shields.io/badge/live_demo-try_to_trick_it-B0262F?style=for-the-badge)](https://mandate-near-three.vercel.app) [![Judge demo](https://img.shields.io/badge/judge_demo-npm_run_judge-1F2559?style=for-the-badge)](#try-it-in-one-command)
+[![Contract](https://img.shields.io/badge/contract-testnet-2D6A4F?style=for-the-badge)](https://testnet.nearblocks.io/address/mandate.makabeez-mandate.testnet)
 [![License](https://img.shields.io/badge/license-MIT-4A5080?style=for-the-badge)](LICENSE)
 [![Built for NEAR HACKATHON](https://img.shields.io/badge/built_for-NEAR_HACKATHON-1F2559?style=for-the-badge)](https://nearhackathon.com)
 <!-- live:end -->
@@ -62,7 +62,19 @@ Contract unit tests (24): `npm run test:contract`.
 ## Live on testnet
 
 <!-- live-testnet:start -->
-Not deployed yet. `npm run deploy` writes the addresses here (via `npm run readme`).
+| | |
+|---|---|
+| Dashboard | [mandate-near-three.vercel.app](https://mandate-near-three.vercel.app) |
+| Vault contract | [`mandate.makabeez-mandate.testnet`](https://testnet.nearblocks.io/address/mandate.makabeez-mandate.testnet) (testnet) |
+| Owner | [`makabeez-mandate.testnet`](https://testnet.nearblocks.io/address/makabeez-mandate.testnet) |
+| Deploy + init (one tx) | [7THCgoyMjj…](https://testnet.nearblocks.io/txns/7THCgoyMjj3w31URWRVr9aP1Zng2pU7dxdzqoz74eTUt) |
+| Wasm sha256 | `7489a43337b046299a47a86f401a0b4ef9303064132e29308f51d9a8621658bc` |
+| Paid | [INV-1001-X90C](https://testnet.nearblocks.io/txns/Gq9eJUSdPCnXDApaqGaNK6HtAXVfainyHWykUBY87cmj) |
+| Paid with a NEAR AI TEE signature checked on-chain | [INV-1001-V0AU](https://testnet.nearblocks.io/txns/AfRBymETAgGB7jBejDzxNJeSQqZHwz5Q4P3pTMghdvDB) |
+| Held for the owner | [INV-1002-X90C](https://testnet.nearblocks.io/txns/FQjzFaCdndmFygzEGnUGU9PFbgR46Lhr2miwN49NWLXq) |
+| Refused: not an approved vendor (prompt injection) | [INV-6661-J38C](https://testnet.nearblocks.io/txns/DLQsTFTJnxvVeXKm8JMgbvnBCVpEdKJsSctBQxtiPKf5) |
+| Refused: over the per-payment cap | [INV-6662-J38C](https://testnet.nearblocks.io/txns/AqwANtNhRJCkqoL1SssgJCULymUgToZvNYkre6AbzZsz) |
+| Third strike: agent fired, key deleted in the same transaction | [INV-1001-J38C](https://testnet.nearblocks.io/txns/6KgRZu628zAs9wzEfwsZjQHY5riGKBDWFw3ipRknAYad) |
 <!-- live-testnet:end -->
 
 The dashboard (`web/`) reads the vault straight from the RPC, and has a "Try to trick it" form that sends your invoice to the live agent. Its model reads it, decides, and the vault answers on-chain. A public tally counts every invoice visitors send and how it ended: spotted by the model, refused by the vault, paid, or held. When visitors do get the agent fired, a watchdog run by the owner (a separate process with no public port) rehires a fresh one two minutes later, so the next visitor can try.

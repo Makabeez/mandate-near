@@ -1,0 +1,19 @@
+{
+  "network": "testnet",
+  "vault": "mandate.makabeez-mandate.testnet",
+  "owner": "makabeez-mandate.testnet",
+  "vendors": {
+    "api": "api-vendor.makabeez-mandate.testnet",
+    "compute": "gpu-vendor.makabeez-mandate.testnet"
+  },
+  "attacker": "attacker-not-allowlisted.testnet",
+  "wasm_sha256": "7489a43337b046299a47a86f401a0b4ef9303064132e29308f51d9a8621658bc",
+  "deployed_at": "2026-11-06T20:37:19.569Z",
+  "txs": {
+    "create_vault": "9afBN4GxEAiPxaNkoBN4EbrB3PfHVyFqzRm3We6vwTHU",
+    "create_vendor_api": "HP7YsCzMrPUYHvZakMJFztWZ2T7mHsQ4in5vM9nwsseD",
+    "create_vendor_compute": "EdpqtQzyuBLQ72NCRUn15HjaJYVnWdLbrbN1K7QdV2Ko",
+    "deploy_init": "7THCgoyMjj3w31URWRVr9aP1Zng2pU7dxdzqoz74eTUt",
+    "upgrade_1794262429967": "6mjEa13miFN3WRLp1csXWQGNz2viUxRRsKoxPbpb6xh9"
+  }
+}
